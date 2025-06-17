@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <script defer src="./js/scripts.js" type="module"></script>
+    <link rel="preload" href="./resources/title.png" as="image" />
+    <title>Digital Concert</title>
+  </head>
+  <body>
+    <div id="tutorialMessage">
+      <img src="./resources/title.png" alt="title image" />
+      <p><span id="tutorialMessagePrompt">Left Click</span> to Load Scene</p>
+      <p>
+        <span id="tutorialMessagePrompt">Q</span> to Open Track Selector (After
+        scene is loaded)
+      </p>
+      <p><span id="tutorialMessagePrompt">WASD</span> to Move</p>
+    </div>
+    <div id="fpsCounter">
+      Press <span id="fpsCounterPrompt">Space</span> to Play
+    </div>
+    <div id="overlay"></div>
+    <div id="menu">
+      <h2>Track Selector</h2>
+      <ul id="songList">
+        <li>
+          <button data-song="song1">
+            Electronic Rock (King Around Here)<br />AlexGrohl
+          </button>
+        </li>
+        <li>
+          <button data-song="song2">Lofi Study<br />FASSounds</button>
+        </li>
+        <li>
+          <button data-song="song3">Playing In Color<br />29811401</button>
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>

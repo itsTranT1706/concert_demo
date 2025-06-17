@@ -1,0 +1,158 @@
+* {
+  font-family: Arial, sans-serif;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: #000000;
+  margin: 0;
+  padding: 0;
+  overscroll-behavior: none;
+}
+
+#tutorialMessage {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #f2f2f2;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  animation: tutorialAnimation 2s forwards;
+}
+
+@keyframes tutorialAnimation {
+  0% {
+    opacity: 0;
+    /* transform: translate(-50%, -40%); */
+  }
+  100% {
+    opacity: 1;
+    /* transform: translate(-50%, -50%); */
+  }
+}
+
+#tutorialMessage img {
+  /* font-size: 2.75em; */
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  max-height: 50vh;
+}
+
+#tutorialMessage p {
+  font-size: 1.25em;
+}
+
+#tutorialMessagePrompt {
+  color: yellow;
+  font-style: italic;
+  font-weight: bold;
+}
+
+#fpsCounter {
+  display: none;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  padding: 5px;
+  font-size: 0.8em;
+  border-radius: 5px;
+  pointer-events: none;
+  animation: fpsCounterAnimation 0.75s linear forwards;
+}
+
+#fpsCounterPrompt {
+  color: yellow;
+  font-style: italic;
+  font-weight: bold;
+}
+
+@keyframes fpsCounterAnimation {
+  0% {
+    transform: translateX(-100px); /* start offscreen */
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0); /* move to onscreen */
+    opacity: 1;
+  }
+}
+
+#menu {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  opacity: 0.85;
+}
+
+/* menu title */
+#menu h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* song list */
+#songList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* song list items */
+#songList li {
+  margin-bottom: 10px;
+}
+
+/* song buttons */
+#songList button {
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  width: 300px;
+  text-align: left;
+  font-size: 16px;
+}
+
+/* song buttons */
+#songList button:hover {
+  background-color: #e0e0e0;
+  cursor: pointer;
+}
+
+/* opaque black background */
+#overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+#epilepsyWarning {
+  background-color: #50a8d1;
+  color: #fff;
+  padding: 10px;
+  font-weight: bold;
+  font-size: 18px;
+}
