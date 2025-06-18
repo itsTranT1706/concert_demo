@@ -317,42 +317,6 @@ class Main {
     this.onWindowResize_();
   }
 
-  // hide and show menu for track selection
-  // createMenu_() {
-  //   let isMenuVisible = false;
-
-  //   const songSelect = document.getElementById("menu");
-  //   songSelect.addEventListener("change", (event) => {
-  //     const selectedSong = event.target.value;
-  //     changeSong(selectedSong);
-  //   });
-
-  //   const menuGrab = document.getElementById("menu");
-  //   const overlayGrab = document.getElementById("overlay");
-
-  //   document.addEventListener("keydown", (event) => {
-  //     if (event.code === "Keyq" || event.code === "KeyQ") {
-  //       // toggle menu visibility
-  //       if (!isMenuVisible) {
-  //         // unlock mouse from pointer lock
-  //         document.exitPointerLock();
-  //         menuGrab.style.display = "block";
-  //         overlayGrab.style.display = "block";
-  //         isMenuVisible = true;
-  //         isCameraMovementEnabled = false;
-  //       } else {
-  //         // lock mouse from pointer lock
-  //         document.body.requestPointerLock();
-  //         menuGrab.style.display = "none";
-  //         overlayGrab.style.display = "none";
-  //         isMenuVisible = false;
-  //         isCameraMovementEnabled = true;
-  //       }
-  //     }
-  //   });
-  // }
- 
-
   createParticleEffects() {
     // Create floating particles for magical atmosphere
     const particleCount = 100;
@@ -412,23 +376,33 @@ class Main {
 
     // audio loader and settings, spacebar to start, user can only start once
     const loader = new THREE.AudioLoader();
+    loader.load(`../resources/music/sound123.mp3`, (buffer)=> {
+      sound1.setBuffer(buffer);
+      sound1.setVolume(0.5);
+      sound1.setRefDistance(100);
+      sound1.play();
+
+    });
     loader.load(`resources/music/${songName}.mp3`, (buffer) => {
-      const handleKeyDown = (event) => {
-        if (event.code === "KeyW") {
-          sound1.setBuffer(buffer);
-          sound1.setLoop(true);
-          sound1.setVolume(0.5);
-          sound1.setRefDistance(100);
-          sound1.play();
+      // const handleKeyDown = (event) => {
+        setTimeout(()=>{
+          sound1.pause();
+
+          const sound2 = new THREE.PositionalAudio(this.listener_);
+          sound2.setBuffer(buffer);
+          sound2.setLoop(true);
+          sound2.setVolume(0.5);
+          sound2.setRefDistance(100);
+          sound2.play();
           this.createParticleEffects();
           // this.initializeScene_();
           this.analyzer1_ = new THREE.AudioAnalyser(sound1, 128);
           this.analyzer1Data_ = [];
           document.removeEventListener("keydown", handleKeyDown);
-        }
-      };
+        }, 160000);
+      // }
       
-      document.addEventListener("keydown", handleKeyDown);
+      // document.addEventListener("keydown", handleKeyDown);
     });
 
     this.indexTimer_ = 0;
@@ -573,6 +547,27 @@ class Main {
     // Create video element
     this.videoPaths_ = [
       '../resources/videos/countdown2.mp4',
+      '../resources/videos/opendoor.mp4',
+      '../resources/videos/suzume.mp4',
+      '../resources/videos/suzume.mp4',
+      '../resources/videos/suzume.mp4',
+      '../resources/videos/suzume.mp4',
+      '../resources/videos/suzume.mp4',
+      '../resources/videos/suzume.mp4',
+      '../resources/videos/suzume.mp4',
+      '../resources/videos/suzume.mp4',
+      '../resources/videos/suzume.mp4',
+      '../resources/videos/suzume.mp4',
+      '../resources/videos/suzume.mp4',
+      '../resources/videos/suzume.mp4',
+      '../resources/videos/suzume.mp4',
+      '../resources/videos/suzume.mp4',
+      '../resources/videos/suzume.mp4',
+      '../resources/videos/suzume.mp4',
+      '../resources/videos/suzume.mp4',
+      '../resources/videos/suzume.mp4',
+      '../resources/videos/suzume.mp4',
+      '../resources/videos/suzume.mp4',
       '../resources/videos/dog.mp4',
   ];
   this.currentVideoIndex_ = 0;
@@ -623,38 +618,6 @@ class Main {
 
   // Fog
   this.scene_.fog = new THREE.FogExp2(0x000000, 0.01);
-    // const video = document.createElement('video');
-    // video.src = '../resources/freepbr/dog.mp4'; // Replace with your local video path
-    // video.crossOrigin = "anonymous";
-    // video.loop = true;
-    // video.muted = false; // Muted to allow autoplay
-    // video.play().catch(e => console.error("Video play failed:", e));
-
-    // // Create video texture
-    // const videoTexture = new THREE.VideoTexture(video);
-    // videoTexture.minFilter = THREE.LinearFilter;
-    // videoTexture.magFilter = THREE.LinearFilter;
-
-    // // Speaker material with video texture
-    // const speakerMaterial = new THREE.MeshStandardMaterial({
-    //   map: videoTexture,
-    //   side: THREE.FrontSide
-    // });
-
-    // const speaker1 = new THREE.Mesh(
-    //   new THREE.BoxGeometry(0.1, 50, 40),
-    //   speakerMaterial
-    // );
-    // speaker1.position.set(-40, 20, 0);
-    // speaker1.castShadow = true;
-    // speaker1.receiveShadow = true;
-    // this.scene_.add(speaker1);
-
-    // this.speakerMesh1_ = speaker1;
-
-    // // Fog
-    // this.scene_.fog = new THREE.FogExp2(0x000000, 0.01);
-
     // Background texture
     const diffuseMap = mapLoader.load("resources/background-grey-dots.png");
     diffuseMap.anisotropy = maxAnisotropy;
