@@ -1,43 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" type="text/css" href="styles.css" />
-    <script defer src="./js/scripts.js" type="module"></script>
-    <link rel="preload" href="./resources/title.png" as="image" />
-    <title>Digital Concert</title>
-  </head>
-  <body>
-    <div id="tutorialMessage">
-      <img src="./resources/title.png" alt="title image" />
-      <p><span id="tutorialMessagePrompt">Left Click</span> to Load Scene</p>
-      <p>
-        <span id="tutorialMessagePrompt">Q</span> to Open Track Selector (After
-        scene is loaded)
-      </p>
-      <p><span id="tutorialMessagePrompt">WASD</span> to Move</p>
-    </div>
-    <div id="fpsCounter">
-      Press <span id="fpsCounterPrompt">Space</span> to Play
-    </div>
-    <div id="overlay"></div>
-    <div id="menu">
-      <h2>Track Selector</h2>
-      <ul id="songList">
-        <li>
-          <button data-song="song1">
-            Electronic Rock (King Around Here)<br />AlexGrohl
-          </button>
-        </li>
-        <li>
-          <button data-song="song2">Lofi Study<br />FASSounds</button>
-        </li>
-        <li>
-          <button data-song="song3">Playing In Color<br />29811401</button>
-        </li>
-      </ul>
-    </div>
-  </body>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="./image/gift.png">
+    <link rel="stylesheet" href="style.css">
+    <title>Thuỷ thủ mặt trăng</title>
+
+</head>
+<body>
+    <!-- handle -->
+    <div class='progress'>
+        <div class='progress_inner'>
+          <div class='progress_inner__step'>
+            <label for='step-1'>Start</label>
+          </div>
+          <div class='progress_inner__step'>
+            <label for='step-2'>Prepare gift</label>
+          </div>
+          <div class='progress_inner__step'>
+            <label for='step-3'>Pack gift</label>
+          </div>
+          <div class='progress_inner__step'>
+            <label for='step-4'>Decorate box</label>
+          </div>
+          <div class='progress_inner__step'>
+            <label for='step-5'>Send gift</label>
+          </div>
+          <input checked='checked' id='step-1' name='step' type='radio'>
+          <input id='step-2' name='step' type='radio'>
+          <input id='step-3' name='step' type='radio'>
+          <input id='step-4' name='step' type='radio'>
+          <input id='step-5' name='step' type='radio'>
+          <div class='progress_inner__bar'></div>
+          <div class='progress_inner__bar--set'></div>
+          <div class='progress_inner__tabs'>
+            <div class='tab tab-0'>
+              <h1>Hello </h1>
+              <p>:v hi bro </p>
+            </div>
+            <div class='tab tab-1'>
+              <h1>Ta daa</h1>
+              <p>mặc dù nay đã quá mất gần 1 ngày rồi, nhưng mà t vẫn mong món quà muộn này đến tay bro (có thể là mắt và tai) </p>
+            </div>
+            <div class='tab tab-2'>
+              <h1>Pack gift</h1>
+              <p></p>
+            </div>
+            <div class='tab tab-3'>
+              <h1>Decorate box</h1>
+              <p>bro từ từ làm ngụm nước đã nhé, mùa hè phải uống nước nhiều</p>
+            </div>
+            <div class='tab tab-2'>
+              <h1>Send gift</h1>
+              <p>toi thật sự k biết điều này làm cho bro vui k nữa :((, nêu cảm nhận nhé</p>
+            </div>
+          </div>
+          <div class='progress_inner__status'>
+            <div class='box_base'></div>
+             
+            <div class='box_lid'></div>
+            <div class='box_ribbon'></div>
+            <div class='box_bow'>
+              <div class='box_bow__left'></div>
+              <div class='box_bow__right'></div>
+              
+            </div>
+            <div class='box_item'></div>
+            <div class='box_tag'></div>
+            <div class='box_string'><p1>click</p1></div>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+    <!-- <div class="instructions">Hover me!</div> -->
+</body>
+<script src="app.js"></script>
 </html>

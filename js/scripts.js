@@ -300,9 +300,10 @@ class LinearSpline {
 // main entry point
 class Main {
   constructor(songName) {
+    this.effects = [];
     this.songName = songName;
     this.initialize_();
-    this.createMenu_();
+    // this.createMenu_();
   }
 
   initialize_() {
@@ -317,40 +318,90 @@ class Main {
   }
 
   // hide and show menu for track selection
-  createMenu_() {
-    let isMenuVisible = false;
+  // createMenu_() {
+  //   let isMenuVisible = false;
 
-    const songSelect = document.getElementById("menu");
-    songSelect.addEventListener("change", (event) => {
-      const selectedSong = event.target.value;
-      changeSong(selectedSong);
+  //   const songSelect = document.getElementById("menu");
+  //   songSelect.addEventListener("change", (event) => {
+  //     const selectedSong = event.target.value;
+  //     changeSong(selectedSong);
+  //   });
+
+  //   const menuGrab = document.getElementById("menu");
+  //   const overlayGrab = document.getElementById("overlay");
+
+  //   document.addEventListener("keydown", (event) => {
+  //     if (event.code === "Keyq" || event.code === "KeyQ") {
+  //       // toggle menu visibility
+  //       if (!isMenuVisible) {
+  //         // unlock mouse from pointer lock
+  //         document.exitPointerLock();
+  //         menuGrab.style.display = "block";
+  //         overlayGrab.style.display = "block";
+  //         isMenuVisible = true;
+  //         isCameraMovementEnabled = false;
+  //       } else {
+  //         // lock mouse from pointer lock
+  //         document.body.requestPointerLock();
+  //         menuGrab.style.display = "none";
+  //         overlayGrab.style.display = "none";
+  //         isMenuVisible = false;
+  //         isCameraMovementEnabled = true;
+  //       }
+  //     }
+  //   });
+  // }
+ 
+
+  createParticleEffects() {
+    // Create floating particles for magical atmosphere
+    const particleCount = 100;
+    const particles = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    
+    for (let i = 0; i < particleCount * 5; i += 3) {
+        positions[i] = (Math.random() - 0.5) * 100;     // x
+        positions[i + 1] = Math.random() * 30 + 5;       // y
+        positions[i + 2] = (Math.random() - 0.5) * 80;   // z
+        positions[i + 3] = (Math.random() - 0.5) * 180;   // z
+    }
+    
+    particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    
+    const particleMaterial = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 0.5,
+        transparent: true,
+        opacity: 0.6
     });
-
-    const menuGrab = document.getElementById("menu");
-    const overlayGrab = document.getElementById("overlay");
-
-    document.addEventListener("keydown", (event) => {
-      if (event.code === "Keyq" || event.code === "KeyQ") {
-        // toggle menu visibility
-        if (!isMenuVisible) {
-          // unlock mouse from pointer lock
-          document.exitPointerLock();
-          menuGrab.style.display = "block";
-          overlayGrab.style.display = "block";
-          isMenuVisible = true;
-          isCameraMovementEnabled = false;
-        } else {
-          // lock mouse from pointer lock
-          document.body.requestPointerLock();
-          menuGrab.style.display = "none";
-          overlayGrab.style.display = "none";
-          isMenuVisible = false;
-          isCameraMovementEnabled = true;
+    // this.scene = new THREE.Scene();
+    this.scene_.fog = new THREE.Fog(0x000033, 50, 200);
+    const particleSystem = new THREE.Points(particles, particleMaterial);
+    this.scene_.add(particleSystem);
+    this.effects.push(particleSystem);
+    
+    // Animate particles
+    const animateParticles = () => {
+        if (this.effects.includes(particleSystem)) {
+            const positions = particleSystem.geometry.attributes.position.array;
+            
+            for (let i = 1; i < positions.length; i += 3) {
+                positions[i] += 0.02; // Move up slowly
+                if (positions[i] > 35) {
+                    positions[i] = 5; // Reset to bottom
+                }
+            }
+            
+            particleSystem.geometry.attributes.position.needsUpdate = true;
+            particleSystem.rotation.y += 0.002;
+            
+            requestAnimationFrame(animateParticles);
         }
-      }
-    });
-  }
-
+    };
+    
+    animateParticles();
+}
+  
   initializeAudio_(songName) {
     this.listener_ = new THREE.AudioListener();
     this.camera_.add(this.listener_);
@@ -363,18 +414,20 @@ class Main {
     const loader = new THREE.AudioLoader();
     loader.load(`resources/music/${songName}.mp3`, (buffer) => {
       const handleKeyDown = (event) => {
-        if (event.code === "Space") {
+        if (event.code === "KeyW") {
           sound1.setBuffer(buffer);
           sound1.setLoop(true);
           sound1.setVolume(0.5);
           sound1.setRefDistance(100);
           sound1.play();
+          this.createParticleEffects();
+          // this.initializeScene_();
           this.analyzer1_ = new THREE.AudioAnalyser(sound1, 128);
           this.analyzer1Data_ = [];
           document.removeEventListener("keydown", handleKeyDown);
         }
       };
-
+      
       document.addEventListener("keydown", handleKeyDown);
     });
 
@@ -501,7 +554,7 @@ class Main {
       new THREE.BoxGeometry(5, 25, 8),
       this.loadMaterial_("worn_metal4_", 1)
     );
-    block1.position.set(-40, 5, 25);
+    block1.position.set(-40, 5, 35);
     block1.castShadow = true;
     block1.receiveShadow = true;
     this.scene_.add(block1);
@@ -511,44 +564,96 @@ class Main {
       this.loadMaterial_("worn_metal4_", 1)
     );
     
-    block2.position.set(-40, 5, -25);
+    block2.position.set(-40, 5, -35);
     block2.castShadow = true;
     block2.receiveShadow = true;
     this.scene_.add(block2);
 
     // MAIN SPEAKER WITH LOCAL VIDEO
     // Create video element
-    const video = document.createElement('video');
-    video.src = '../resources/freepbr/502260772_24382555131332137_4342659006107405972_n.mp4'; // Replace with your local video path
-    video.crossOrigin = "anonymous";
-    video.loop = true;
-    video.muted = true; // Muted to allow autoplay
-    video.play().catch(e => console.error("Video play failed:", e));
+    this.videoPaths_ = [
+      '../resources/videos/countdown2.mp4',
+      '../resources/videos/dog.mp4',
+  ];
+  this.currentVideoIndex_ = 0;
 
-    // Create video texture
-    const videoTexture = new THREE.VideoTexture(video);
-    videoTexture.minFilter = THREE.LinearFilter;
-    videoTexture.magFilter = THREE.LinearFilter;
+  // Create video element
+  const video = document.createElement('video');
+  video.src = this.videoPaths_[this.currentVideoIndex_];
+  video.crossOrigin = "anonymous";
+  video.muted = true; // Muted for autoplay
+  video.play().catch(e => console.error("Video play failed:", e));
 
-    // Speaker material with video texture
-    const speakerMaterial = new THREE.MeshStandardMaterial({
+  // Create video texture
+  const videoTexture = new THREE.VideoTexture(video);
+  videoTexture.minFilter = THREE.LinearFilter;
+  videoTexture.magFilter = THREE.LinearFilter;
+
+  // Speaker material with video texture
+  const speakerMaterial = new THREE.MeshStandardMaterial({
       map: videoTexture,
       side: THREE.FrontSide
-    });
+  });
 
-    const speaker1 = new THREE.Mesh(
-      new THREE.BoxGeometry(0.1, 50, 40),
+  const speaker1 = new THREE.Mesh(
+      new THREE.BoxGeometry(0.1, 40, 60),
       speakerMaterial
-    );
-    speaker1.position.set(-40, 4, 0);
-    speaker1.castShadow = true;
-    speaker1.receiveShadow = true;
-    this.scene_.add(speaker1);
+  );
+  speaker1.position.set(-40, 20, 0);
+  speaker1.castShadow = true;
+  speaker1.receiveShadow = true;
+  this.scene_.add(speaker1);
 
-    this.speakerMesh1_ = speaker1;
+  this.speakerMesh1_ = speaker1;
+  this.videoElement_ = video; // Store video element for control
 
-    // Fog
-    this.scene_.fog = new THREE.FogExp2(0x000000, 0.01);
+  // Event listener for video end
+  this.videoElement_.addEventListener('ended', () => {
+      if (this.currentVideoIndex_ < this.videoPaths_.length - 1) {
+          // Move to next video
+          this.currentVideoIndex_++;
+          this.videoElement_.src = this.videoPaths_[this.currentVideoIndex_];
+          this.videoElement_.play().catch(e => console.error("Video play failed:", e));
+      } else {
+          // Loop last video
+          this.videoElement_.loop = true;
+          this.videoElement_.play().catch(e => console.error("Video play failed:", e));
+      }
+  });
+
+  // Fog
+  this.scene_.fog = new THREE.FogExp2(0x000000, 0.01);
+    // const video = document.createElement('video');
+    // video.src = '../resources/freepbr/dog.mp4'; // Replace with your local video path
+    // video.crossOrigin = "anonymous";
+    // video.loop = true;
+    // video.muted = false; // Muted to allow autoplay
+    // video.play().catch(e => console.error("Video play failed:", e));
+
+    // // Create video texture
+    // const videoTexture = new THREE.VideoTexture(video);
+    // videoTexture.minFilter = THREE.LinearFilter;
+    // videoTexture.magFilter = THREE.LinearFilter;
+
+    // // Speaker material with video texture
+    // const speakerMaterial = new THREE.MeshStandardMaterial({
+    //   map: videoTexture,
+    //   side: THREE.FrontSide
+    // });
+
+    // const speaker1 = new THREE.Mesh(
+    //   new THREE.BoxGeometry(0.1, 50, 40),
+    //   speakerMaterial
+    // );
+    // speaker1.position.set(-40, 20, 0);
+    // speaker1.castShadow = true;
+    // speaker1.receiveShadow = true;
+    // this.scene_.add(speaker1);
+
+    // this.speakerMesh1_ = speaker1;
+
+    // // Fog
+    // this.scene_.fog = new THREE.FogExp2(0x000000, 0.01);
 
     // Background texture
     const diffuseMap = mapLoader.load("resources/background-grey-dots.png");
@@ -653,277 +758,6 @@ loadMaterial_(name, tiling) {
 
     return material;
 }
-
-
-  // initializeScene_() {
-  //   const distance = 50.0;
-  //   const angle = Math.PI / 4.0;
-  //   const penumbra = 0.5;
-  //   const decay = 1.0;
-
-  //   let light = null;
-
-  //   // spotlight on speaker
-  //   light = new THREE.SpotLight(
-  //     0xffffff,
-  //     100.0, // brightness
-  //     distance,
-  //     angle,
-  //     penumbra,
-  //     decay
-  //   );
-  //   light.castShadow = true;
-  //   light.shadow.bias = -0.00001;
-  //   light.shadow.mapSize.width = 4096;
-  //   light.shadow.mapSize.height = 4096;
-  //   light.shadow.camera.near = 1;
-  //   light.shadow.camera.far = 100;
-  //   light.position.set(-35, 25, 0);
-  //   light.target.position.set(-40, 4, 0);
-  //   this.scene_.add(light);
-  //   this.scene_.add(light.target);
-
-  //   // spotlight above speaker
-  //   light = new THREE.SpotLight(
-  //     0xffffff,
-  //     100.0, // brightness
-  //     distance,
-  //     angle,
-  //     penumbra,
-  //     decay
-  //   );
-  //   light.castShadow = true;
-  //   light.shadow.bias = -0.00001;
-  //   light.shadow.mapSize.width = 4096;
-  //   light.shadow.mapSize.height = 4096;
-  //   light.shadow.camera.near = 1;
-  //   light.shadow.camera.far = 100;
-  //   light.position.set(-0, 25, 0);
-  //   light.target.position.set(-40, 4, 0);
-  //   this.scene_.add(light);
-  //   this.scene_.add(light.target);
-
-  //   // acts kind of like a fill light or URP from unity
-  //   const upColor = 0xffe5b4; // pastel yellow
-  //   const downColor = 0xc0c0c0; // pastel gray
-  //   light = new THREE.HemisphereLight(upColor, downColor, 0.5);
-  //   light.color.setHSL(0.6, 0.5, 0.2);
-  //   light.groundColor.setHSL(0.095, 1, 0.75);
-  //   light.position.set(0, 4, 0);
-  //   this.scene_.add(light);
-
-  //   const mapLoader = new THREE.TextureLoader();
-  //   const maxAnisotropy = this.threejs_.capabilities.getMaxAnisotropy();
-
-  //   const plane = new THREE.Mesh(
-  //     new THREE.PlaneGeometry(100, 100, 10, 10),
-  //     this.loadMaterial_("rustediron2_", 4)
-  //   );
-  //   plane.castShadow = false;
-  //   plane.receiveShadow = true;
-  //   plane.rotation.x = -Math.PI / 2;
-  //   this.scene_.add(plane);
-
-  //   const concreteMaterial = this.loadMaterial_("concrete3-", 4);
-
-  //   // ended up loading speaker texture in the audio loader, this loads the speaker texture
-  //   const speakerTexture = new THREE.TextureLoader().load(
-  //     "./resources/freepbr/speaker.png"
-  //   );
-  //   speakerTexture.anisotropy = maxAnisotropy;
-  //   speakerTexture.wrapS = THREE.MirroredRepeatWrapping;
-  //   speakerTexture.wrapT = THREE.MirroredRepeatWrapping;
-  //   speakerTexture.repeat.set(1, 1);
-
-  //   // speaker material which was previously loaded above
-  //   const speakerMaterial = new THREE.MeshStandardMaterial({
-  //     map: speakerTexture,
-  //   });
-
-  //   const wall1 = new THREE.Mesh(
-  //     new THREE.BoxGeometry(100, 500, 4), // width, height, depth
-  //     concreteMaterial
-  //   );
-  //   wall1.position.set(0, -40, -50);
-  //   wall1.castShadow = true;
-  //   wall1.receiveShadow = true;
-  //   this.scene_.add(wall1);
-
-  //   const wall2 = new THREE.Mesh(
-  //     new THREE.BoxGeometry(100, 500, 4), // width, height, depth
-  //     concreteMaterial
-  //   );
-  //   wall2.position.set(0, -40, 50);
-  //   wall2.castShadow = true;
-  //   wall2.receiveShadow = true;
-  //   this.scene_.add(wall2);
-
-  //   const wall3 = new THREE.Mesh(
-  //     new THREE.BoxGeometry(4, 500, 100), // width, height, depth
-  //     concreteMaterial
-  //   );
-  //   wall3.position.set(50, -40, 0);
-  //   wall3.castShadow = true;
-  //   wall3.receiveShadow = true;
-  //   this.scene_.add(wall3);
-
-  //   const wall4 = new THREE.Mesh(
-  //     new THREE.BoxGeometry(4, 500, 100), // width, height, depth
-  //     concreteMaterial
-  //   );
-  //   wall4.position.set(-50, -40, 0);
-  //   wall4.castShadow = true;
-  //   wall4.receiveShadow = true;
-  //   this.scene_.add(wall4);
-
-  //   const block1 = new THREE.Mesh(
-  //     new THREE.BoxGeometry(5, 25, 8), // depth, height, width
-  //     speakerMaterial
-  //   );
-  //   block1.position.set(-40, 5, 25); // from speaker: front/back, up/down, left/right
-  //   block1.castShadow = true;
-  //   block1.receiveShadow = true;
-  //   this.scene_.add(block1);
-
-  //   const block2 = new THREE.Mesh(
-  //     new THREE.BoxGeometry(5, 25, 8), // depth, height, width
-  //     speakerMaterial
-  //   );
-  //   block2.position.set(-40, 5, -25); // from speaker: front/back, up/down, left/right
-  //   block2.castShadow = true;
-  //   block2.receiveShadow = true;
-  //   this.scene_.add(block2);
-
-  //   // MAIN SPEAKER
-  //   const speaker1Material = this.loadMaterial_("worn_metal4_", 1);
-  //   const speaker1 = new THREE.Mesh(
-  //     new THREE.BoxGeometry(1, 50, 40), // width, height, depth of block
-  //     speaker1Material
-  //   );
-  //   speaker1.position.set(-40, 4, 0); // position in world
-  //   speaker1.castShadow = true;
-  //   speaker1.receiveShadow = true;
-  //   this.scene_.add(speaker1);
-
-  //   const speaker1Geo = new THREE.BoxGeometry(0.25, 0.25, 0.25);
-  //   const speaker1BoxMaterial = this.loadMaterial_("broken_down_concrete2_", 1);
-  //   this.speakerMeshes1_ = [];
-  //   const speaker1Group = new THREE.Group();
-  //   speaker1Group.position.x = 0.5 + 0.125;
-
-  //   // blocks on speaker, 6,464 blocks
-  //   for (let x = -50; x <= 50; ++x) {
-  //     const row = [];
-  //     for (let y = 0; y < 64; ++y) {
-  //       const speaker1_1 = new THREE.Mesh(
-  //         speaker1Geo,
-  //         speaker1BoxMaterial.clone()
-  //       );
-  //       speaker1_1.position.set(0, y * 0.35 - 3, x * 0.35);
-  //       speaker1_1.castShadow = true;
-  //       speaker1_1.receiveShadow = true;
-
-  //       // block properties
-  //       speaker1_1.scale.set(1, 1, 1); // scale of block
-  //       speaker1_1.material.color.set("black"); // color of block
-  //       speaker1_1.material.emissive.set("black"); // emissive color of the block
-
-  //       speaker1Group.add(speaker1_1);
-  //       row.push(speaker1_1);
-  //     }
-  //     this.speakerMeshes1_.push(row);
-  //   }
-  //   speaker1.add(speaker1Group);
-
-  //   this.speakerMesh1_ = speaker1;
-
-  //   // audience
-  //   // const audienceCount = 50; // number of audience
-  //   // const audienceSize = 2; // size of each audience
-  //   // const audienceColor = 0xffcc00; // color of the audience
-
-  //   // const audienceGeometry = new THREE.SphereGeometry(audienceSize, 16, 16); // radius, widthSegments, heightSegments
-  //   // const audienceMaterial = new THREE.MeshBasicMaterial({
-  //   //   color: audienceColor,
-  //   // });
-
-  //   // for (let i = 0; i < audienceCount; i++) {
-  //   //   const audience = new THREE.Mesh(audienceGeometry, audienceMaterial);
-
-  //   //   // randomly distribute audience within a certain range
-  //   //   const posX = Math.random() * 5 - 5; // x position range: -200 to -20, left/right facing speaker
-  //   //   const posY = Math.random() * 10 - 0; // y position range: -10 to -20, up/down
-  //   //   const posZ = Math.random() * 100 - 10; // z position range: -100 to -10, front/back facing speaker
-
-  //   //   audience.position.set(posX, posY, posZ);
-  //   //   this.scene_.add(audience);
-  //   // }
-
-  //   // exponential fog to blur the background and sharp corners
-  //   this.scene_.fog = new THREE.FogExp2(0x000000, 0.01); // color, density
-
-  //   // anisotropy is a rendering technique that enhances the quality of texture filtering, particularly for textures that are viewed at oblique angles
-  //   // (determines the level of anisotropic filtering to be applied to the texture)
-  //   const diffuseMap = mapLoader.load("resources/background-grey-dots.png");
-  //   diffuseMap.anisotropy = maxAnisotropy;
-
-  //   // create Box3 for each mesh in the scene so that we can do some easy intersection tests.
-  //   const meshes = [plane, wall1, wall2, wall3, wall4];
-
-  //   this.objects_ = [];
-
-  //   for (let i = 0; i < meshes.length; ++i) {
-  //     const b = new THREE.Box3();
-  //     b.setFromObject(meshes[i]);
-  //     this.objects_.push(b);
-  //   }
-
-  //   this.fpsCamera_ = new FirstPersonCamera(this.camera_, this.objects_);
-  // }
-
-  // loadMaterial_(name, tiling) {
-  //   const mapLoader = new THREE.TextureLoader();
-  //   const maxAnisotropy = this.threejs_.capabilities.getMaxAnisotropy();
-
-  //   const metalMap = mapLoader.load(
-  //     "resources/freepbr/" + name + "metallic.png"
-  //   );
-  //   metalMap.anisotropy = maxAnisotropy;
-  //   metalMap.wrapS = THREE.RepeatWrapping;
-  //   metalMap.wrapT = THREE.RepeatWrapping;
-  //   metalMap.repeat.set(tiling, tiling);
-
-  //   const albedo = mapLoader.load("resources/freepbr/" + name + "albedo.png");
-  //   albedo.anisotropy = maxAnisotropy;
-  //   albedo.wrapS = THREE.RepeatWrapping;
-  //   albedo.wrapT = THREE.RepeatWrapping;
-  //   albedo.repeat.set(tiling, tiling);
-
-  //   const normalMap = mapLoader.load(
-  //     "resources/freepbr/" + name + "normal.png"
-  //   );
-  //   normalMap.anisotropy = maxAnisotropy;
-  //   normalMap.wrapS = THREE.RepeatWrapping;
-  //   normalMap.wrapT = THREE.RepeatWrapping;
-  //   normalMap.repeat.set(tiling, tiling);
-
-  //   const roughnessMap = mapLoader.load(
-  //     "resources/freepbr/" + name + "roughness.png"
-  //   );
-  //   roughnessMap.anisotropy = maxAnisotropy;
-  //   roughnessMap.wrapS = THREE.RepeatWrapping;
-  //   roughnessMap.wrapT = THREE.RepeatWrapping;
-  //   roughnessMap.repeat.set(tiling, tiling);
-
-  //   const material = new THREE.MeshStandardMaterial({
-  //     metalnessMap: metalMap,
-  //     map: albedo,
-  //     normalMap: normalMap,
-  //     roughnessMap: roughnessMap,
-  //   });
-
-  //   return material;
-  // }
 
   initializeRenderer_() {
     this.threejs_ = new THREE.WebGLRenderer({
@@ -1148,17 +982,6 @@ function changeSong(songName) {
   location.reload();
 }
 
-// event listener for the songList element
-const songList = document.getElementById("songList");
-songList.addEventListener("click", (event) => {
-  const target = event.target;
-
-  // check if the clicked element is a button
-  if (target.tagName === "BUTTON") {
-    const songName = target.getAttribute("data-song");
-    changeSong(songName);
-  }
-});
 
 // to circumvent autoplay policy
 window.addEventListener("DOMContentLoaded", () => {
@@ -1170,7 +993,7 @@ window.addEventListener("DOMContentLoaded", () => {
   // const epilepsyWarning = document.getElementById("epilepsyWarning");
 
   const _Setup = () => {
-    _APP = new Main(storedReturnedVariable || "song2"); // use the stored returned variable if it exists, otherwise use the default song
+    _APP = new Main(storedReturnedVariable || "sparkle"); // use the stored returned variable if it exists, otherwise use the default song
     document.body.removeEventListener("click", _Setup);
     tutorialMessage.style.display = "none"; // hide the tutorial message
     // epilepsyWarning.style.display = "none"; // hide the epilepsyWarning
