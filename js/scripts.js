@@ -611,6 +611,7 @@ class Main {
       '../resources/freepbr/image5.jpg', 
       '../resources/freepbr/image6.jpg', 
       '../resources/freepbr/image7.jpg', 
+      '../resources/freepbr/image8.jpg', 
     ];
     this.currentImageIndex2_ = 0; // For speaker2
     this.currentImageIndex3_ = 0; // For speaker3
