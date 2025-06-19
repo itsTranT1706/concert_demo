@@ -13,7 +13,6 @@ import { FXAAShader } from "https://cdn.skypack.dev/three@0.136/examples/jsm/sha
 
 import { math } from "./math.js";
 import { noise } from "./noise.js";
-
 // camera bool
 let isCameraMovementEnabled = true;
 
@@ -322,50 +321,50 @@ class Main {
     const particleCount = 100;
     const particles = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
-    
+
     for (let i = 0; i < particleCount * 5; i += 3) {
-        positions[i] = (Math.random() - 0.5) * 100;     // x
-        positions[i + 1] = Math.random() * 30 + 5;       // y
-        positions[i + 2] = (Math.random() - 0.5) * 80;   // z
-        positions[i + 3] = (Math.random() - 0.5) * 180;   // z
+      positions[i] = (Math.random() - 0.5) * 100;     // x
+      positions[i + 1] = Math.random() * 30 + 5;       // y
+      positions[i + 2] = (Math.random() - 0.5) * 80;   // z
+      positions[i + 3] = (Math.random() - 0.5) * 180;   // z
     }
-    
+
     particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    
+
     const particleMaterial = new THREE.PointsMaterial({
-        color: 0xffffff,
-        size: 0.5,
-        transparent: true,
-        opacity: 0.6
+      color: 0xffffff,
+      size: 0.5,
+      transparent: true,
+      opacity: 0.6
     });
     // this.scene = new THREE.Scene();
     this.scene_.fog = new THREE.Fog(0x000033, 50, 200);
     const particleSystem = new THREE.Points(particles, particleMaterial);
     this.scene_.add(particleSystem);
     this.effects.push(particleSystem);
-    
+
     // Animate particles
     const animateParticles = () => {
-        if (this.effects.includes(particleSystem)) {
-            const positions = particleSystem.geometry.attributes.position.array;
-            
-            for (let i = 1; i < positions.length; i += 3) {
-                positions[i] += 0.02; // Move up slowly
-                if (positions[i] > 35) {
-                    positions[i] = 5; // Reset to bottom
-                }
-            }
-            
-            particleSystem.geometry.attributes.position.needsUpdate = true;
-            particleSystem.rotation.y += 0.002;
-            
-            requestAnimationFrame(animateParticles);
+      if (this.effects.includes(particleSystem)) {
+        const positions = particleSystem.geometry.attributes.position.array;
+
+        for (let i = 1; i < positions.length; i += 3) {
+          positions[i] += 0.02; // Move up slowly
+          if (positions[i] > 35) {
+            positions[i] = 5; // Reset to bottom
+          }
         }
+
+        particleSystem.geometry.attributes.position.needsUpdate = true;
+        particleSystem.rotation.y += 0.002;
+
+        requestAnimationFrame(animateParticles);
+      }
     };
-    
+
     animateParticles();
-}
-  
+  }
+
   initializeAudio_(songName) {
     this.listener_ = new THREE.AudioListener();
     this.camera_.add(this.listener_);
@@ -376,7 +375,7 @@ class Main {
 
     // audio loader and settings, spacebar to start, user can only start once
     const loader = new THREE.AudioLoader();
-    loader.load(`../resources/music/sound123.mp3`, (buffer)=> {
+    loader.load(`../resources/music/sound123.mp3`, (buffer) => {
       sound1.setBuffer(buffer);
       sound1.setVolume(0.5);
       sound1.setRefDistance(100);
@@ -385,23 +384,22 @@ class Main {
     });
     loader.load(`resources/music/${songName}.mp3`, (buffer) => {
       // const handleKeyDown = (event) => {
-        setTimeout(()=>{
-          sound1.pause();
+      setTimeout(() => {
+        sound1.pause();
 
-          const sound2 = new THREE.PositionalAudio(this.listener_);
-          sound2.setBuffer(buffer);
-          sound2.setLoop(true);
-          sound2.setVolume(0.5);
-          sound2.setRefDistance(100);
-          sound2.play();
-          this.createParticleEffects();
-          // this.initializeScene_();
-          this.analyzer1_ = new THREE.AudioAnalyser(sound1, 128);
-          this.analyzer1Data_ = [];
-          document.removeEventListener("keydown", handleKeyDown);
-        }, 160000);
+        const sound2 = new THREE.PositionalAudio(this.listener_);
+        sound2.setBuffer(buffer);
+        sound2.setLoop(true);
+        sound2.setVolume(0.5);
+        sound2.setRefDistance(100);
+        sound2.play();
+        this.createParticleEffects();
+        // this.initializeScene_();
+        this.analyzer1_ = new THREE.AudioAnalyser(sound1, 128);
+        this.analyzer1Data_ = [];
+      }, 160000);
       // }
-      
+
       // document.addEventListener("keydown", handleKeyDown);
     });
 
@@ -488,6 +486,7 @@ class Main {
 
     const concreteMaterial = this.loadMaterial_("concrete3-", 4);
 
+
     const wall1 = new THREE.Mesh(
       new THREE.BoxGeometry(100, 500, 4),
       concreteMaterial
@@ -537,7 +536,7 @@ class Main {
       new THREE.BoxGeometry(5, 25, 8),
       this.loadMaterial_("worn_metal4_", 1)
     );
-    
+
     block2.position.set(-40, 5, -35);
     block2.castShadow = true;
     block2.receiveShadow = true;
@@ -568,56 +567,137 @@ class Main {
       '../resources/videos/suzume.mp4',
       '../resources/videos/suzume.mp4',
       '../resources/videos/suzume.mp4',
+      '../resources/videos/suzume.mp4',
+      '../resources/videos/suzume.mp4',
       '../resources/videos/dog.mp4',
-  ];
-  this.currentVideoIndex_ = 0;
+    ];
+    this.currentVideoIndex_ = 0;
 
-  // Create video element
-  const video = document.createElement('video');
-  video.src = this.videoPaths_[this.currentVideoIndex_];
-  video.crossOrigin = "anonymous";
-  video.muted = true; // Muted for autoplay
-  video.play().catch(e => console.error("Video play failed:", e));
+    // Create video element
+    const video = document.createElement('video');
+    video.src = this.videoPaths_[this.currentVideoIndex_];
+    video.crossOrigin = "anonymous";
+    video.muted = true; // Muted for autoplay
+    video.play().catch(e => console.error("Video play failed:", e));
 
-  // Create video texture
-  const videoTexture = new THREE.VideoTexture(video);
-  videoTexture.minFilter = THREE.LinearFilter;
-  videoTexture.magFilter = THREE.LinearFilter;
+    // Create video texture
+    const videoTexture = new THREE.VideoTexture(video);
+    videoTexture.minFilter = THREE.LinearFilter;
+    videoTexture.magFilter = THREE.LinearFilter;
 
-  // Speaker material with video texture
-  const speakerMaterial = new THREE.MeshStandardMaterial({
+    // Speaker material with video texture
+    const speakerMaterial = new THREE.MeshStandardMaterial({
       map: videoTexture,
       side: THREE.FrontSide
-  });
+    });
 
-  const speaker1 = new THREE.Mesh(
+    const speaker1 = new THREE.Mesh(
       new THREE.BoxGeometry(0.1, 40, 60),
       speakerMaterial
-  );
-  speaker1.position.set(-40, 20, 0);
-  speaker1.castShadow = true;
-  speaker1.receiveShadow = true;
-  this.scene_.add(speaker1);
+    );
+    speaker1.position.set(-40, 20, 0);
+    speaker1.castShadow = true;
+    speaker1.receiveShadow = true;
+    this.scene_.add(speaker1);
 
-  this.speakerMesh1_ = speaker1;
-  this.videoElement_ = video; // Store video element for control
 
-  // Event listener for video end
-  this.videoElement_.addEventListener('ended', () => {
+    // Image array for slideshow
+    this.imagePaths_ = [
+      '../resources/freepbr/image1.jpg', 
+      '../resources/freepbr/image2.jpg', 
+      '../resources/freepbr/image3.jpg', 
+      '../resources/freepbr/image4.jpg', 
+      '../resources/freepbr/image5.jpg', 
+    ];
+    this.currentImageIndex2_ = 0; // For speaker2
+    this.currentImageIndex3_ = 0; // For speaker3
+
+    // Load initial image texture for speaker2
+    const imageTexture2 = mapLoader.load(this.imagePaths_[this.currentImageIndex2_]);
+    imageTexture2.minFilter = THREE.LinearFilter;
+    imageTexture2.magFilter = THREE.LinearFilter;
+    imageTexture2.anisotropy = this.threejs_.capabilities.getMaxAnisotropy();
+
+    // Speaker material with image texture for speaker2
+    const speakerMaterial2 = new THREE.MeshStandardMaterial({
+      map: imageTexture2,
+      side: THREE.FrontSide
+    });
+
+    // Speaker 2 (perpendicular along Z-axis, facing +X)
+    const speaker2 = new THREE.Mesh(
+      new THREE.BoxGeometry(0.1, 40, 60),
+      speakerMaterial2
+    );
+    speaker2.position.set(0, 20, -40); // Position at Z = -40
+    speaker2.rotation.y = Math.PI / 2; // Rotate 90 degrees around Y to face +X
+    speaker2.castShadow = true;
+    speaker2.receiveShadow = true;
+    this.scene_.add(speaker2);
+
+    // Load initial image texture for speaker3
+    const imageTexture3 = mapLoader.load(this.imagePaths_[this.currentImageIndex3_]);
+    imageTexture3.minFilter = THREE.LinearFilter;
+    imageTexture3.magFilter = THREE.LinearFilter;
+    imageTexture3.anisotropy = this.threejs_.capabilities.getMaxAnisotropy();
+
+    // Speaker material with image texture for speaker3
+    const speakerMaterial3 = new THREE.MeshStandardMaterial({
+      map: imageTexture3,
+      side: THREE.FrontSide
+    });
+
+    // Speaker 3 (perpendicular along Z-axis, facing -X)
+    const speaker3 = new THREE.Mesh(
+      new THREE.BoxGeometry(0.1, 40, 60),
+      speakerMaterial3
+    );
+    speaker3.position.set(0, 20, 40); // Position at Z = +40
+    speaker3.rotation.y = -Math.PI / 2; // Rotate -90 degrees around Y to face -X
+    speaker3.castShadow = true;
+    speaker3.receiveShadow = true;
+    this.scene_.add(speaker3);
+
+    // Slideshow for speaker2
+    const slideshowInterval2 = setInterval(() => {
+      this.currentImageIndex2_ = (this.currentImageIndex2_ + 1) % this.imagePaths_.length;
+      const newTexture2 = mapLoader.load(this.imagePaths_[this.currentImageIndex2_]);
+      newTexture2.minFilter = THREE.LinearFilter;
+      newTexture2.magFilter = THREE.LinearFilter;
+      newTexture2.anisotropy = this.threejs_.capabilities.getMaxAnisotropy();
+      speakerMaterial2.map = newTexture2;
+      speakerMaterial2.needsUpdate = true;
+    }, 5000); // Change image every 5 seconds
+
+    // Slideshow for speaker3
+    const slideshowInterval3 = setInterval(() => {
+      this.currentImageIndex3_ = (this.currentImageIndex3_ + 1) % this.imagePaths_.length;
+      const newTexture3 = mapLoader.load(this.imagePaths_[this.currentImageIndex3_]);
+      newTexture3.minFilter = THREE.LinearFilter;
+      newTexture3.magFilter = THREE.LinearFilter;
+      newTexture3.anisotropy = this.threejs_.capabilities.getMaxAnisotropy();
+      speakerMaterial3.map = newTexture3;
+      speakerMaterial3.needsUpdate = true;
+    }, 8000); // Change image every 5 seconds
+    this.speakerMesh1_ = speaker1;
+    this.videoElement_ = video; // Store video element for control
+
+    // Event listener for video end
+    this.videoElement_.addEventListener('ended', () => {
       if (this.currentVideoIndex_ < this.videoPaths_.length - 1) {
-          // Move to next video
-          this.currentVideoIndex_++;
-          this.videoElement_.src = this.videoPaths_[this.currentVideoIndex_];
-          this.videoElement_.play().catch(e => console.error("Video play failed:", e));
+        // Move to next video
+        this.currentVideoIndex_++;
+        this.videoElement_.src = this.videoPaths_[this.currentVideoIndex_];
+        this.videoElement_.play().catch(e => console.error("Video play failed:", e));
       } else {
-          // Loop last video
-          this.videoElement_.loop = true;
-          this.videoElement_.play().catch(e => console.error("Video play failed:", e));
+        // Loop last video
+        this.videoElement_.loop = true;
+        this.videoElement_.play().catch(e => console.error("Video play failed:", e));
       }
-  });
+    });
 
-  // Fog
-  this.scene_.fog = new THREE.FogExp2(0x000000, 0.01);
+    // Fog
+    this.scene_.fog = new THREE.FogExp2(0x000000, 0.01);
     // Background texture
     const diffuseMap = mapLoader.load("resources/background-grey-dots.png");
     diffuseMap.anisotropy = maxAnisotropy;
@@ -632,14 +712,16 @@ class Main {
     }
 
     this.fpsCamera_ = new FirstPersonCamera(this.camera_, this.objects_);
-}
+  }
 
-loadMaterial_(name, tiling) {
+  loadMaterial_(name, tiling) {
     const mapLoader = new THREE.TextureLoader();
     const maxAnisotropy = this.threejs_.capabilities.getMaxAnisotropy();
 
     const metalMap = mapLoader.load(
       "resources/freepbr/" + name + "metallic.png"
+      // "../resources/freepbr/1735923002421.jpeg"
+
     );
     metalMap.anisotropy = maxAnisotropy;
     metalMap.wrapS = THREE.RepeatWrapping;
@@ -654,6 +736,8 @@ loadMaterial_(name, tiling) {
 
     const normalMap = mapLoader.load(
       "resources/freepbr/" + name + "normal.png"
+      // "../resources/freepbr/1735923002421.jpeg"
+
     );
     normalMap.anisotropy = maxAnisotropy;
     normalMap.wrapS = THREE.RepeatWrapping;
@@ -662,6 +746,7 @@ loadMaterial_(name, tiling) {
 
     const roughnessMap = mapLoader.load(
       "resources/freepbr/" + name + "roughness.png"
+      // "../resources/freepbr/1735923002421.jpeg"
     );
     roughnessMap.anisotropy = maxAnisotropy;
     roughnessMap.wrapS = THREE.RepeatWrapping;
@@ -676,51 +761,51 @@ loadMaterial_(name, tiling) {
     });
 
     return material;
-}
+  }
 
-loadMaterial_(name, tiling) {
-    const mapLoader = new THREE.TextureLoader();
-    const maxAnisotropy = this.threejs_.capabilities.getMaxAnisotropy();
+  // loadMaterial_(name, tiling) {
+  //     const mapLoader = new THREE.TextureLoader();
+  //     const maxAnisotropy = this.threejs_.capabilities.getMaxAnisotropy();
 
-    const metalMap = mapLoader.load(
-      "resources/freepbr/" + name + "metallic.png"
-    );
-    metalMap.anisotropy = maxAnisotropy;
-    metalMap.wrapS = THREE.RepeatWrapping;
-    metalMap.wrapT = THREE.RepeatWrapping;
-    metalMap.repeat.set(tiling, tiling);
+  //     const metalMap = mapLoader.load(
+  //       "resources/freepbr/" + name + "metallic.png"
+  //     );
+  //     metalMap.anisotropy = maxAnisotropy;
+  //     metalMap.wrapS = THREE.RepeatWrapping;
+  //     metalMap.wrapT = THREE.RepeatWrapping;
+  //     metalMap.repeat.set(tiling, tiling);
 
-    const albedo = mapLoader.load("resources/freepbr/" + name + "albedo.png");
-    albedo.anisotropy = maxAnisotropy;
-    albedo.wrapS = THREE.RepeatWrapping;
-    albedo.wrapT = THREE.RepeatWrapping;
-    albedo.repeat.set(tiling, tiling);
+  //     const albedo = mapLoader.load("resources/freepbr/" + name + "albedo.png");
+  //     albedo.anisotropy = maxAnisotropy;
+  //     albedo.wrapS = THREE.RepeatWrapping;
+  //     albedo.wrapT = THREE.RepeatWrapping;
+  //     albedo.repeat.set(tiling, tiling);
 
-    const normalMap = mapLoader.load(
-      "resources/freepbr/" + name + "normal.png"
-    );
-    normalMap.anisotropy = maxAnisotropy;
-    normalMap.wrapS = THREE.RepeatWrapping;
-    normalMap.wrapT = THREE.RepeatWrapping;
-    normalMap.repeat.set(tiling, tiling);
+  //     const normalMap = mapLoader.load(
+  //       "resources/freepbr/" + name + "normal.png"
+  //     );
+  //     normalMap.anisotropy = maxAnisotropy;
+  //     normalMap.wrapS = THREE.RepeatWrapping;
+  //     normalMap.wrapT = THREE.RepeatWrapping;
+  //     normalMap.repeat.set(tiling, tiling);
 
-    const roughnessMap = mapLoader.load(
-      "resources/freepbr/" + name + "roughness.png"
-    );
-    roughnessMap.anisotropy = maxAnisotropy;
-    roughnessMap.wrapS = THREE.RepeatWrapping;
-    roughnessMap.wrapT = THREE.RepeatWrapping;
-    roughnessMap.repeat.set(tiling, tiling);
+  //     const roughnessMap = mapLoader.load(
+  //       "resources/freepbr/" + name + "roughness.png"
+  //     );
+  //     roughnessMap.anisotropy = maxAnisotropy;
+  //     roughnessMap.wrapS = THREE.RepeatWrapping;
+  //     roughnessMap.wrapT = THREE.RepeatWrapping;
+  //     roughnessMap.repeat.set(tiling, tiling);
 
-    const material = new THREE.MeshStandardMaterial({
-      metalnessMap: metalMap,
-      map: albedo,
-      normalMap: normalMap,
-      roughnessMap: roughnessMap,
-    });
+  //     const material = new THREE.MeshStandardMaterial({
+  //       metalnessMap: metalMap,
+  //       map: albedo,
+  //       normalMap: normalMap,
+  //       roughnessMap: roughnessMap,
+  //     });
 
-    return material;
-}
+  //     return material;
+  // }
 
   initializeRenderer_() {
     this.threejs_ = new THREE.WebGLRenderer({
@@ -898,7 +983,7 @@ loadMaterial_(name, tiling) {
 
       const mappedHue =
         ((averageFrequency - minFrequency) * (maxHue - minHue)) /
-          (maxFrequency - minFrequency) +
+        (maxFrequency - minFrequency) +
         minHue;
 
       let h = mappedHue;
