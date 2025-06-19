@@ -600,6 +600,7 @@ class Main {
     speaker1.receiveShadow = true;
     this.scene_.add(speaker1);
 
+    setTimeout(() => {
 
     // Image array for slideshow
     this.imagePaths_ = [
@@ -608,6 +609,8 @@ class Main {
       '../resources/freepbr/image3.jpg', 
       '../resources/freepbr/image4.jpg', 
       '../resources/freepbr/image5.jpg', 
+      '../resources/freepbr/image6.jpg', 
+      '../resources/freepbr/image7.jpg', 
     ];
     this.currentImageIndex2_ = 0; // For speaker2
     this.currentImageIndex3_ = 0; // For speaker3
@@ -635,6 +638,20 @@ class Main {
     speaker2.receiveShadow = true;
     this.scene_.add(speaker2);
 
+    // Slideshow for speaker2
+    const slideshowInterval2 = setInterval(() => {
+      this.currentImageIndex2_ = (this.currentImageIndex2_ + 1) % this.imagePaths_.length;
+      const newTexture2 = mapLoader.load(this.imagePaths_[this.currentImageIndex2_]);
+      newTexture2.minFilter = THREE.LinearFilter;
+      newTexture2.magFilter = THREE.LinearFilter;
+      newTexture2.anisotropy = this.threejs_.capabilities.getMaxAnisotropy();
+      speakerMaterial2.map = newTexture2;
+      speakerMaterial2.needsUpdate = true;
+    }, 7500); // Change image every 5 seconds
+  
+
+    setTimeout(()=> {
+    
     // Load initial image texture for speaker3
     const imageTexture3 = mapLoader.load(this.imagePaths_[this.currentImageIndex3_]);
     imageTexture3.minFilter = THREE.LinearFilter;
@@ -658,16 +675,7 @@ class Main {
     speaker3.receiveShadow = true;
     this.scene_.add(speaker3);
 
-    // Slideshow for speaker2
-    const slideshowInterval2 = setInterval(() => {
-      this.currentImageIndex2_ = (this.currentImageIndex2_ + 1) % this.imagePaths_.length;
-      const newTexture2 = mapLoader.load(this.imagePaths_[this.currentImageIndex2_]);
-      newTexture2.minFilter = THREE.LinearFilter;
-      newTexture2.magFilter = THREE.LinearFilter;
-      newTexture2.anisotropy = this.threejs_.capabilities.getMaxAnisotropy();
-      speakerMaterial2.map = newTexture2;
-      speakerMaterial2.needsUpdate = true;
-    }, 5000); // Change image every 5 seconds
+    
 
     // Slideshow for speaker3
     const slideshowInterval3 = setInterval(() => {
@@ -678,7 +686,9 @@ class Main {
       newTexture3.anisotropy = this.threejs_.capabilities.getMaxAnisotropy();
       speakerMaterial3.map = newTexture3;
       speakerMaterial3.needsUpdate = true;
-    }, 8000); // Change image every 5 seconds
+    }, 9000); // Change image every 5 seconds
+  },7500)
+},61000);
     this.speakerMesh1_ = speaker1;
     this.videoElement_ = video; // Store video element for control
 
